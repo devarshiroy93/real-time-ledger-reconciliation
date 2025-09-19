@@ -1,0 +1,23 @@
+# Node
+# Ignore ALL node_modules anywhere
+**/node_modules/
+
+# Ignore ALL dist folders
+**/dist/
+
+# Build outputs
+dist/
+**/dist/
+
+# CDK
+infra/cdk.out/
+infra/package-lock.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React build
+ui/build/
+ui/.env.local

@@ -1,0 +1,486 @@
+{
+ "Resources": {
+  "CustomerLedger2929641E": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "txId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "txId",
+      "KeyType": "HASH"
+     }
+    ],
+    "StreamSpecification": {
+     "StreamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "TableName": "ReconStack-CustomerLedger"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/CustomerLedger/Resource"
+   }
+  },
+  "ProcessorLedgerA7265C57": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "txId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "timestamp",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "txId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "timestamp",
+      "KeyType": "RANGE"
+     }
+    ],
+    "StreamSpecification": {
+     "StreamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "TableName": "ReconStack-ProcessorLedger"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ProcessorLedger/Resource"
+   }
+  },
+  "CoreLedger388841CB": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "txId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "timestamp",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "txId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "timestamp",
+      "KeyType": "RANGE"
+     }
+    ],
+    "StreamSpecification": {
+     "StreamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "TableName": "ReconStack-CoreLedger"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/CoreLedger/Resource"
+   }
+  },
+  "ReconciliationFindings2A38872C": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "txId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "category",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "txId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "category",
+      "KeyType": "RANGE"
+     }
+    ],
+    "TableName": "ReconStack-ReconciliationFindings"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationFindings/Resource"
+   }
+  },
+  "DailySummary204585B1": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "date",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "date",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "ReconStack-DailySummary"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/DailySummary/Resource"
+   }
+  },
+  "ReconStackSubmitTransactionLambdaServiceRole34CF690E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconStackSubmitTransactionLambda/ServiceRole/Resource"
+   }
+  },
+  "ReconStackSubmitTransactionLambdaServiceRoleDefaultPolicyA76CE427": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "CustomerLedger2929641E",
+          "Arn"
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ReconStackSubmitTransactionLambdaServiceRoleDefaultPolicyA76CE427",
+    "Roles": [
+     {
+      "Ref": "ReconStackSubmitTransactionLambdaServiceRole34CF690E"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconStackSubmitTransactionLambda/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ReconStackSubmitTransactionLambda5306AEBB": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-851725582337-us-east-1",
+     "S3Key": "7022b4c5af60f5d6d821f38e08d9dbd83701f9a0b19016d5daa4ea2595222d7f.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "CUSTOMER_LEDGER_TABLE": {
+       "Ref": "CustomerLedger2929641E"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "ReconStackSubmitTransactionLambdaServiceRole34CF690E",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x"
+   },
+   "DependsOn": [
+    "ReconStackSubmitTransactionLambdaServiceRoleDefaultPolicyA76CE427",
+    "ReconStackSubmitTransactionLambdaServiceRole34CF690E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconStackSubmitTransactionLambda/Resource",
+    "aws:asset:path": "asset.7022b4c5af60f5d6d821f38e08d9dbd83701f9a0b19016d5daa4ea2595222d7f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ReconciliationApiE3EE3D35": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "APIs for ledger reconciliation demo",
+    "Name": "Reconciliation Service"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationApi/Resource"
+   }
+  },
+  "ReconciliationApiDeployment33DDF8825b8a54cf891c421b80f6c176bf9fe16d": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "APIs for ledger reconciliation demo",
+    "RestApiId": {
+     "Ref": "ReconciliationApiE3EE3D35"
+    }
+   },
+   "DependsOn": [
+    "ReconciliationApitransactionPOSTCCB9112E",
+    "ReconciliationApitransactionD7DDDA16"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationApi/Deployment/Resource"
+   }
+  },
+  "ReconciliationApiDeploymentStageprod14928DA3": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "ReconciliationApiDeployment33DDF8825b8a54cf891c421b80f6c176bf9fe16d"
+    },
+    "RestApiId": {
+     "Ref": "ReconciliationApiE3EE3D35"
+    },
+    "StageName": "prod"
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "ReconciliationApitransactionD7DDDA16": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "ReconciliationApiE3EE3D35",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "transaction",
+    "RestApiId": {
+     "Ref": "ReconciliationApiE3EE3D35"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationApi/Default/transaction/Resource"
+   }
+  },
+  "ReconciliationApitransactionPOSTApiPermissionReconciliationStackReconciliationApiF33D9560POSTtransaction0D0E78C1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ReconStackSubmitTransactionLambda5306AEBB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:851725582337:",
+       {
+        "Ref": "ReconciliationApiE3EE3D35"
+       },
+       "/",
+       {
+        "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+       },
+       "/POST/transaction"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction"
+   }
+  },
+  "ReconciliationApitransactionPOSTApiPermissionTestReconciliationStackReconciliationApiF33D9560POSTtransaction361628E9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ReconStackSubmitTransactionLambda5306AEBB",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:851725582337:",
+       {
+        "Ref": "ReconciliationApiE3EE3D35"
+       },
+       "/test-invoke-stage/POST/transaction"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction"
+   }
+  },
+  "ReconciliationApitransactionPOSTCCB9112E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "ReconStackSubmitTransactionLambda5306AEBB",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "ReconciliationApitransactionD7DDDA16"
+    },
+    "RestApiId": {
+     "Ref": "ReconciliationApiE3EE3D35"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02QT2+DMAzFP0vvqTfodtix7bTb/ojujkxwWYAkCJshhPjuUwLbeno/W37PllNIHp8g2eHIe102+9YUMF8EdaNw5HwuJ4fWlwXMn1i0pM5XF2FRLdqixNz5kmqGtygvg9NivFMGLcyZXw1RP3xr9BTKlRbFhxyZSRiOQRQf4DTohuSETFs8zOer+0sNZuqtYTbeLQo7U6HQiBPMGbEcOxPXbfhMXesnS05C96a6CFbxsBUyYj/0muLa32ILWvmV5MuXobXSsvzPxdtDkHFVmHgfpBvk1r6o8COo+e47TSF5gPtdzcbs+8GJsQTZqj+C+uaKigEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "ReconciliationStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ReconciliationApiEndpoint15867AED": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "ReconciliationApiE3EE3D35"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+      },
+      "/"
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,201 @@
+{
+  "version": "36.3.0",
+  "artifacts": {
+    "ReconciliationStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ReconciliationStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ReconciliationStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://851725582337/us-east-1",
+      "properties": {
+        "templateFile": "ReconciliationStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::851725582337:role/cdk-hnb659fds-deploy-role-851725582337-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::851725582337:role/cdk-hnb659fds-cfn-exec-role-851725582337-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-851725582337-us-east-1/ea62ce66fa978c23ea6d4b81b74f2bce51b0fd678fbb1107c1a25741b493a12d.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ReconciliationStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::851725582337:role/cdk-hnb659fds-lookup-role-851725582337-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ReconciliationStack.assets"
+      ],
+      "metadata": {
+        "/ReconciliationStack/CustomerLedger": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "CustomerLedger2929641E"
+            }
+          }
+        ],
+        "/ReconciliationStack/CustomerLedger/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomerLedger2929641E"
+          }
+        ],
+        "/ReconciliationStack/ProcessorLedger": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProcessorLedgerA7265C57"
+            }
+          }
+        ],
+        "/ReconciliationStack/ProcessorLedger/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessorLedgerA7265C57"
+          }
+        ],
+        "/ReconciliationStack/CoreLedger": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "CoreLedger388841CB"
+            }
+          }
+        ],
+        "/ReconciliationStack/CoreLedger/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CoreLedger388841CB"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationFindings": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ReconciliationFindings2A38872C"
+            }
+          }
+        ],
+        "/ReconciliationStack/ReconciliationFindings/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationFindings2A38872C"
+          }
+        ],
+        "/ReconciliationStack/DailySummary": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DailySummary204585B1"
+            }
+          }
+        ],
+        "/ReconciliationStack/DailySummary/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DailySummary204585B1"
+          }
+        ],
+        "/ReconciliationStack/ReconStackSubmitTransactionLambda/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconStackSubmitTransactionLambdaServiceRole34CF690E"
+          }
+        ],
+        "/ReconciliationStack/ReconStackSubmitTransactionLambda/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconStackSubmitTransactionLambdaServiceRoleDefaultPolicyA76CE427"
+          }
+        ],
+        "/ReconciliationStack/ReconStackSubmitTransactionLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconStackSubmitTransactionLambda5306AEBB"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApiE3EE3D35"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApiDeployment33DDF8825b8a54cf891c421b80f6c176bf9fe16d"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApiDeploymentStageprod14928DA3"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApiEndpoint15867AED"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/Default/transaction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApitransactionD7DDDA16"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApitransactionPOSTApiPermissionReconciliationStackReconciliationApiF33D9560POSTtransaction0D0E78C1"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApitransactionPOSTApiPermissionTestReconciliationStackReconciliationApiF33D9560POSTtransaction361628E9"
+          }
+        ],
+        "/ReconciliationStack/ReconciliationApi/Default/transaction/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReconciliationApitransactionPOSTCCB9112E"
+          }
+        ],
+        "/ReconciliationStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ReconciliationStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ReconciliationStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ReconciliationStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
