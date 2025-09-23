@@ -111,6 +111,32 @@ curl -X POST https://<api>/simulate/core   -H "Content-Type: application/json"  
 
 ---
 
+
+## 🏦 Real-World Banking Challenges Addressed
+
+This POC highlights challenges real financial institutions face when reconciling distributed ledgers:
+
+- **Ledger Fragmentation**  
+  Multiple systems of record (customer-facing apps, processors, and core banking ledgers) often diverge in timing and amounts.  
+  → *ReconciliationEngine continuously compares and aligns them.*
+
+- **Operational Risk**  
+  Manual reconciliation is slow and error-prone, increasing financial + compliance risk.  
+  → *Automation reduces ops overhead and human error.*
+
+- **Discrepancy Categories**  
+  Differences may be caused by FX adjustments, duplicates, missing settlements, or pending states.  
+  → *Engine explicitly categorizes these for faster resolution.*
+
+- **Auditability & Compliance**  
+  Regulators require a provable trail of all changes.  
+  → *ReconciliationAudit table provides an immutable lifecycle log.*
+
+- **Scalability**  
+  Payment volumes are high; systems must handle streaming updates and bursts.  
+  → *DynamoDB Streams + Lambdas enable elastic scaling with no polling.*
+
+---
 ## 📂 Repository Structure
 
 ```text
