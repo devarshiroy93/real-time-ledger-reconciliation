@@ -2,7 +2,7 @@
 
 ---
 
-## 🎯 Objective
+##  Objective
 This project demonstrates a **real-time ledger reconciliation engine** using **AWS DynamoDB, Lambda, and API Gateway**.
 
 - Simulate **3 ledgers**:
@@ -19,7 +19,7 @@ This project demonstrates a **real-time ledger reconciliation engine** using **A
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```text
              ┌───────────────┐
@@ -48,7 +48,7 @@ ReconciliationFindings      ReconciliationAudit
 
 ---
 
-## 🗄️ DynamoDB Tables
+##  DynamoDB Tables
 
 | Table                     | PK       | SK               | Purpose |
 |---------------------------|----------|------------------|---------|
@@ -61,7 +61,7 @@ ReconciliationFindings      ReconciliationAudit
 
 ---
 
-## 🧩 Lambdas
+##  Lambdas
 
 | Lambda                  | API / Trigger              | Role |
 |--------------------------|----------------------------|------|
@@ -91,7 +91,7 @@ ReconciliationFindings      ReconciliationAudit
 
 ---
 
-## 🖥️ Demo Flow
+##  Demo Flow
 
 ```bash
 # 1. Submit transaction
@@ -126,5 +126,32 @@ real-time-ledger-reconciliation/
 │── tests/                 # Unit/integration tests
 │── README.md
 ```
+
+---
+---
+
+## 🔎 Observability & Resilience (Future Enhancements)
+
+- **Monitoring**  
+  Add CloudWatch custom metrics for reconciliation categories  
+  (`MATCHED ✅`, `MISMATCH ❌`, `PENDING ⏳`).
+
+- **Dashboards**  
+  Build CloudWatch dashboards or Grafana panels to visualize reconciliation  
+  trends over time (e.g., daily mismatch ratio).
+
+- **Retries**  
+  Configure Dead-Letter Queues (SQS) for failed Lambda events to avoid  
+  silent data loss and enable replay.
+
+- **Alarms**  
+  Use CloudWatch Alarms + SNS notifications for:  
+  - High mismatch/error rates  
+  - Lambda failures or throttles  
+  - API Gateway 5xx spikes  
+
+- **Tracing**  
+  Enable AWS X-Ray (or OpenTelemetry) for end-to-end latency tracking,  
+  root-cause analysis, and debugging across Lambdas + API Gateway.
 
 ---
