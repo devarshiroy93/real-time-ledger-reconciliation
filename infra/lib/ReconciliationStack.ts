@@ -11,7 +11,7 @@ export class ReconciliationStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // 1. Customer Ledger (simple: txId only)
+    // ---------------- Tables ----------------
     const customerLedger = new dynamodb.Table(this, "CustomerLedger", {
       partitionKey: { name: "txId", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -20,7 +20,6 @@ export class ReconciliationStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // 2. Processor Ledger (txId + timestamp, since multiple entries possible)
     const processorLedger = new dynamodb.Table(this, "ProcessorLedger", {
       partitionKey: { name: "txId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "timestamp", type: dynamodb.AttributeType.STRING },
@@ -30,7 +29,6 @@ export class ReconciliationStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // 3. Core Ledger (txId + timestamp, similar reasoning as processor)
     const coreLedger = new dynamodb.Table(this, "CoreLedger", {
       partitionKey: { name: "txId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "timestamp", type: dynamodb.AttributeType.STRING },
@@ -40,7 +38,6 @@ export class ReconciliationStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // 4. Reconciliation Findings (latest status only, one row per txId)
     const reconciliationFindings = new dynamodb.Table(this, "ReconciliationFindings", {
       partitionKey: { name: "txId", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -48,7 +45,6 @@ export class ReconciliationStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // 5. Daily Summary (date = PK)
     new dynamodb.Table(this, "DailySummary", {
       partitionKey: { name: "date", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -56,7 +52,6 @@ export class ReconciliationStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // 6. Reconciliation Audit (full lifecycle, append-only)
     const reconciliationAudit = new dynamodb.Table(this, "ReconciliationAudit", {
       partitionKey: { name: "txId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "eventTimestamp", type: dynamodb.AttributeType.STRING },
@@ -65,110 +60,153 @@ export class ReconciliationStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-
+    // ---------------- Lambdas ----------------
     const submitTransactionLambda = new lambdaNodejs.NodejsFunction(this, "ReconStackSubmitTransactionLambda", {
       runtime: lambda.Runtime.NODEJS_18_X,
-      entry: path.join(__dirname, "../../lambdas/submit-transaction/index.ts"), // 👈 point to .ts file
-      handler: "handler", // 👈 name of the exported function in index.ts
+      entry: path.join(__dirname, "../../lambdas/submit-transaction/index.ts"),
+      handler: "handler",
       environment: {
         CUSTOMER_LEDGER_TABLE: customerLedger.tableName,
       },
     });
-
-
-    // Grant write access
     customerLedger.grantWriteData(submitTransactionLambda);
 
-    // 🚀 API Gateway
-    const api = new apigateway.RestApi(this, "ReconciliationApi", {
-      restApiName: "Reconciliation Service",
-      description: "APIs for ledger reconciliation demo",
+    const processorSimulatorLambda = new lambdaNodejs.NodejsFunction(this, "ReconStackProcessorSimulatorLambda", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      entry: path.join(__dirname, "../../lambdas/processor-simulator/index.ts"),
+      handler: "handler",
+      environment: {
+        PROCESSOR_LEDGER_TABLE: processorLedger.tableName,
+      },
     });
-
-    // POST /transaction → SubmitTransaction Lambda
-    const transactionResource = api.root.addResource("transaction");
-    transactionResource.addMethod("POST", new apigateway.LambdaIntegration(submitTransactionLambda));
-
-
-    // ProcessorSimulator Lambda
-    const processorSimulatorLambda = new lambdaNodejs.NodejsFunction(
-      this,
-      "ReconStackProcessorSimulatorLambda",
-      {
-        runtime: lambda.Runtime.NODEJS_18_X,
-        entry: path.join(__dirname, "../../lambdas/processor-simulator/index.ts"),
-        handler: "handler",
-        environment: {
-          PROCESSOR_LEDGER_TABLE: processorLedger.tableName,
-        },
-      }
-    );
-
-    // Grant write access
     processorLedger.grantWriteData(processorSimulatorLambda);
 
-    // API Gateway – add /simulate/processor
-    const simulateResource = api.root.addResource("simulate");
-    const processorResource = simulateResource.addResource("processor");
-    processorResource.addMethod(
-      "POST",
-      new apigateway.LambdaIntegration(processorSimulatorLambda)
-    );
-
-    // CoreSimulator Lambda
-    const coreSimulatorLambda = new lambdaNodejs.NodejsFunction(
-      this,
-      "ReconStackCoreSimulatorLambda",
-      {
-        runtime: lambda.Runtime.NODEJS_18_X,
-        entry: path.join(__dirname, "../../lambdas/core-simulator/index.ts"),
-        handler: "handler",
-        environment: {
-          CORE_LEDGER_TABLE: coreLedger.tableName,
-        },
-      }
-    );
-
-    // Grant write access
+    const coreSimulatorLambda = new lambdaNodejs.NodejsFunction(this, "ReconStackCoreSimulatorLambda", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      entry: path.join(__dirname, "../../lambdas/core-simulator/index.ts"),
+      handler: "handler",
+      environment: {
+        CORE_LEDGER_TABLE: coreLedger.tableName,
+      },
+    });
     coreLedger.grantWriteData(coreSimulatorLambda);
 
-    // API Gateway – add /simulate/core
-    const coreResource = simulateResource.addResource("core");
-    coreResource.addMethod("POST", new apigateway.LambdaIntegration(coreSimulatorLambda));
-
-    // ReconciliationEngine Lambda
-    const reconciliationFn = new lambdaNodejs.NodejsFunction(
-      this,
-      "ReconStackReconciliationEngineLambda",
-      {
-        runtime: lambda.Runtime.NODEJS_18_X,
-        entry: path.join(
-          __dirname,
-          "../../lambdas/reconciliation-engine/index.ts"
-        ),
-        handler: "handler",
-        environment: {
-          CUSTOMER_LEDGER_TABLE: customerLedger.tableName,
-          PROCESSOR_LEDGER_TABLE: processorLedger.tableName,
-          CORE_LEDGER_TABLE: coreLedger.tableName,
-          FINDINGS_TABLE: reconciliationFindings.tableName,
-          AUDIT_TABLE: reconciliationAudit.tableName,
-        },
-      }
-    );
-
-    // Permissions
+    const reconciliationFn = new lambdaNodejs.NodejsFunction(this, "ReconStackReconciliationEngineLambda", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      entry: path.join(__dirname, "../../lambdas/reconciliation-engine/index.ts"),
+      handler: "handler",
+      environment: {
+        CUSTOMER_LEDGER_TABLE: customerLedger.tableName,
+        PROCESSOR_LEDGER_TABLE: processorLedger.tableName,
+        CORE_LEDGER_TABLE: coreLedger.tableName,
+        FINDINGS_TABLE: reconciliationFindings.tableName,
+        AUDIT_TABLE: reconciliationAudit.tableName,
+      },
+    });
     customerLedger.grantReadWriteData(reconciliationFn);
     processorLedger.grantReadData(reconciliationFn);
     coreLedger.grantReadData(reconciliationFn);
     reconciliationFindings.grantReadWriteData(reconciliationFn);
     reconciliationAudit.grantWriteData(reconciliationFn);
 
-    // Attach streams
-    reconciliationFn.addEventSource(new sources.DynamoEventSource(customerLedger, { startingPosition: lambda.StartingPosition.LATEST }));
-    reconciliationFn.addEventSource(new sources.DynamoEventSource(processorLedger, { startingPosition: lambda.StartingPosition.LATEST }));
-    reconciliationFn.addEventSource(new sources.DynamoEventSource(coreLedger, { startingPosition: lambda.StartingPosition.LATEST }));
+    reconciliationFn.addEventSource(
+      new sources.DynamoEventSource(customerLedger, { startingPosition: lambda.StartingPosition.LATEST })
+    );
+    reconciliationFn.addEventSource(
+      new sources.DynamoEventSource(processorLedger, { startingPosition: lambda.StartingPosition.LATEST })
+    );
+    reconciliationFn.addEventSource(
+      new sources.DynamoEventSource(coreLedger, { startingPosition: lambda.StartingPosition.LATEST })
+    );
+
+    // ---------------- API Gateway ----------------
+    const api = new apigateway.RestApi(this, "ReconciliationApi", {
+      restApiName: "Reconciliation Service",
+      description: "APIs for ledger reconciliation demo",
+    });
+
+    // API Key + Usage Plan
+    const apiKey = api.addApiKey("ReconciliationApiKey", {
+      apiKeyName: "ReconDemoKey",
+      description: "API Key for Reconciliation POC",
+    });
+
+    const plan = api.addUsagePlan("ReconciliationUsagePlan", {
+      name: "ReconUsagePlan",
+      description: "Limit to 1 req/sec and 100 req/day",
+      throttle: { rateLimit: 1, burstLimit: 1 },
+      quota: { limit: 100, period: apigateway.Period.DAY },
+    });
+
+    plan.addApiStage({ stage: api.deploymentStage });
+    plan.addApiKey(apiKey);
+
+    // ---- Endpoints ----
+    const transactionResource = api.root.addResource("transaction");
+    transactionResource.addMethod("POST", new apigateway.LambdaIntegration(submitTransactionLambda), {
+      apiKeyRequired: true,
+    });
+
+    const simulateResource = api.root.addResource("simulate");
+    const processorResource = simulateResource.addResource("processor");
+    processorResource.addMethod("POST", new apigateway.LambdaIntegration(processorSimulatorLambda), {
+      apiKeyRequired: true,
+    });
+
+    const coreResource = simulateResource.addResource("core");
+    coreResource.addMethod("POST", new apigateway.LambdaIntegration(coreSimulatorLambda), {
+      apiKeyRequired: true,
+    });
+
+    // ---- UI Support Endpoints ----
+    // GET /findings
+    const getFindingsLambda = new lambdaNodejs.NodejsFunction(this, "ReconStackGetFindingsLambda", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      entry: path.join(__dirname, "../../lambdas/get-findings/index.ts"),
+      handler: "handler",
+      environment: { FINDINGS_TABLE: reconciliationFindings.tableName },
+    });
+    reconciliationFindings.grantReadData(getFindingsLambda);
+
+    const findingsResource = api.root.addResource("findings");
+    findingsResource.addMethod("GET", new apigateway.LambdaIntegration(getFindingsLambda), {
+      apiKeyRequired: true,
+    });
+
+    findingsResource.addCorsPreflight({
+      allowOrigins: apigateway.Cors.ALL_ORIGINS,
+      allowMethods: ["GET", "OPTIONS"],
+      allowHeaders: ["Content-Type", "X-Api-Key"],
+    });
+
+    // GET /audit/{txId}
+    const getAuditLambda = new lambdaNodejs.NodejsFunction(this, "ReconStackGetAuditLambda", {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      entry: path.join(__dirname, "../../lambdas/get-audit/index.ts"),
+      handler: "handler",
+      environment: { AUDIT_TABLE: reconciliationAudit.tableName },
+    });
+    reconciliationAudit.grantReadData(getAuditLambda);
+
+    const auditResource = api.root.addResource("audit");
+
+    // ✅ CORS for /audit
+    auditResource.addCorsPreflight({
+      allowOrigins: apigateway.Cors.ALL_ORIGINS,
+      allowMethods: ["GET", "OPTIONS"],
+      allowHeaders: ["Content-Type", "X-Api-Key"],
+    });
+
+    const auditById = auditResource.addResource("{txId}");
+    auditById.addMethod("GET", new apigateway.LambdaIntegration(getAuditLambda), {
+      apiKeyRequired: true,
+    });
+
+    // ✅ CORS for /audit/{txId}
+    auditById.addCorsPreflight({
+      allowOrigins: apigateway.Cors.ALL_ORIGINS,
+      allowMethods: ["GET", "OPTIONS"],
+      allowHeaders: ["Content-Type", "X-Api-Key"],
+    });
   }
-
-
 }

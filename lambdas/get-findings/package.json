@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@types/node": "^24.5.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.893.0",
+    "@aws-sdk/util-dynamodb": "^3.893.0"
+  }
+}

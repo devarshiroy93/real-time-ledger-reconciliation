@@ -21,3 +21,5 @@ yarn-error.log*
 # React build
 ui/build/
 ui/.env.local
+
+cdk.out/

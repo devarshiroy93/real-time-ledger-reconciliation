@@ -491,592 +491,6 @@
               "version": "2.159.1"
             }
           },
-          "ReconciliationApi": {
-            "id": "ReconciliationApi",
-            "path": "ReconciliationStack/ReconciliationApi",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "ReconciliationStack/ReconciliationApi/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
-                  "aws:cdk:cloudformation:props": {
-                    "description": "APIs for ledger reconciliation demo",
-                    "name": "Reconciliation Service"
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
-                  "version": "2.159.1"
-                }
-              },
-              "Deployment": {
-                "id": "Deployment",
-                "path": "ReconciliationStack/ReconciliationApi/Deployment",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "ReconciliationStack/ReconciliationApi/Deployment/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
-                      "aws:cdk:cloudformation:props": {
-                        "description": "APIs for ledger reconciliation demo",
-                        "restApiId": {
-                          "Ref": "ReconciliationApiE3EE3D35"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
-                      "version": "2.159.1"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
-                  "version": "2.159.1"
-                }
-              },
-              "DeploymentStage.prod": {
-                "id": "DeploymentStage.prod",
-                "path": "ReconciliationStack/ReconciliationApi/DeploymentStage.prod",
-                "children": {
-                  "Resource": {
-                    "id": "Resource",
-                    "path": "ReconciliationStack/ReconciliationApi/DeploymentStage.prod/Resource",
-                    "attributes": {
-                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
-                      "aws:cdk:cloudformation:props": {
-                        "deploymentId": {
-                          "Ref": "ReconciliationApiDeployment33DDF882b067519ae80933feb8b9176efd9d0f63"
-                        },
-                        "restApiId": {
-                          "Ref": "ReconciliationApiE3EE3D35"
-                        },
-                        "stageName": "prod"
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
-                      "version": "2.159.1"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
-                  "version": "2.159.1"
-                }
-              },
-              "Endpoint": {
-                "id": "Endpoint",
-                "path": "ReconciliationStack/ReconciliationApi/Endpoint",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.159.1"
-                }
-              },
-              "Default": {
-                "id": "Default",
-                "path": "ReconciliationStack/ReconciliationApi/Default",
-                "children": {
-                  "transaction": {
-                    "id": "transaction",
-                    "path": "ReconciliationStack/ReconciliationApi/Default/transaction",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "ReconciliationStack/ReconciliationApi/Default/transaction/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
-                          "aws:cdk:cloudformation:props": {
-                            "parentId": {
-                              "Fn::GetAtt": [
-                                "ReconciliationApiE3EE3D35",
-                                "RootResourceId"
-                              ]
-                            },
-                            "pathPart": "transaction",
-                            "restApiId": {
-                              "Ref": "ReconciliationApiE3EE3D35"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
-                          "version": "2.159.1"
-                        }
-                      },
-                      "POST": {
-                        "id": "POST",
-                        "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST",
-                        "children": {
-                          "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction": {
-                            "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
-                            "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                              "aws:cdk:cloudformation:props": {
-                                "action": "lambda:InvokeFunction",
-                                "functionName": {
-                                  "Fn::GetAtt": [
-                                    "ReconStackSubmitTransactionLambda5306AEBB",
-                                    "Arn"
-                                  ]
-                                },
-                                "principal": "apigateway.amazonaws.com",
-                                "sourceArn": {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "arn:aws:execute-api:us-east-1:851725582337:",
-                                      {
-                                        "Ref": "ReconciliationApiE3EE3D35"
-                                      },
-                                      "/",
-                                      {
-                                        "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
-                                      },
-                                      "/POST/transaction"
-                                    ]
-                                  ]
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                              "version": "2.159.1"
-                            }
-                          },
-                          "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction": {
-                            "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
-                            "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                              "aws:cdk:cloudformation:props": {
-                                "action": "lambda:InvokeFunction",
-                                "functionName": {
-                                  "Fn::GetAtt": [
-                                    "ReconStackSubmitTransactionLambda5306AEBB",
-                                    "Arn"
-                                  ]
-                                },
-                                "principal": "apigateway.amazonaws.com",
-                                "sourceArn": {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "arn:aws:execute-api:us-east-1:851725582337:",
-                                      {
-                                        "Ref": "ReconciliationApiE3EE3D35"
-                                      },
-                                      "/test-invoke-stage/POST/transaction"
-                                    ]
-                                  ]
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                              "version": "2.159.1"
-                            }
-                          },
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
-                              "aws:cdk:cloudformation:props": {
-                                "authorizationType": "NONE",
-                                "httpMethod": "POST",
-                                "integration": {
-                                  "type": "AWS_PROXY",
-                                  "uri": {
-                                    "Fn::Join": [
-                                      "",
-                                      [
-                                        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
-                                        {
-                                          "Fn::GetAtt": [
-                                            "ReconStackSubmitTransactionLambda5306AEBB",
-                                            "Arn"
-                                          ]
-                                        },
-                                        "/invocations"
-                                      ]
-                                    ]
-                                  },
-                                  "integrationHttpMethod": "POST"
-                                },
-                                "resourceId": {
-                                  "Ref": "ReconciliationApitransactionD7DDDA16"
-                                },
-                                "restApiId": {
-                                  "Ref": "ReconciliationApiE3EE3D35"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
-                              "version": "2.159.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
-                          "version": "2.159.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
-                      "version": "2.159.1"
-                    }
-                  },
-                  "simulate": {
-                    "id": "simulate",
-                    "path": "ReconciliationStack/ReconciliationApi/Default/simulate",
-                    "children": {
-                      "Resource": {
-                        "id": "Resource",
-                        "path": "ReconciliationStack/ReconciliationApi/Default/simulate/Resource",
-                        "attributes": {
-                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
-                          "aws:cdk:cloudformation:props": {
-                            "parentId": {
-                              "Fn::GetAtt": [
-                                "ReconciliationApiE3EE3D35",
-                                "RootResourceId"
-                              ]
-                            },
-                            "pathPart": "simulate",
-                            "restApiId": {
-                              "Ref": "ReconciliationApiE3EE3D35"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
-                          "version": "2.159.1"
-                        }
-                      },
-                      "processor": {
-                        "id": "processor",
-                        "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
-                              "aws:cdk:cloudformation:props": {
-                                "parentId": {
-                                  "Ref": "ReconciliationApisimulateE8AD0488"
-                                },
-                                "pathPart": "processor",
-                                "restApiId": {
-                                  "Ref": "ReconciliationApiE3EE3D35"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
-                              "version": "2.159.1"
-                            }
-                          },
-                          "POST": {
-                            "id": "POST",
-                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST",
-                            "children": {
-                              "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor": {
-                                "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
-                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                                  "aws:cdk:cloudformation:props": {
-                                    "action": "lambda:InvokeFunction",
-                                    "functionName": {
-                                      "Fn::GetAtt": [
-                                        "ReconStackProcessorSimulatorLambdaA2E49CD7",
-                                        "Arn"
-                                      ]
-                                    },
-                                    "principal": "apigateway.amazonaws.com",
-                                    "sourceArn": {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:aws:execute-api:us-east-1:851725582337:",
-                                          {
-                                            "Ref": "ReconciliationApiE3EE3D35"
-                                          },
-                                          "/",
-                                          {
-                                            "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
-                                          },
-                                          "/POST/simulate/processor"
-                                        ]
-                                      ]
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                                  "version": "2.159.1"
-                                }
-                              },
-                              "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor": {
-                                "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
-                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                                  "aws:cdk:cloudformation:props": {
-                                    "action": "lambda:InvokeFunction",
-                                    "functionName": {
-                                      "Fn::GetAtt": [
-                                        "ReconStackProcessorSimulatorLambdaA2E49CD7",
-                                        "Arn"
-                                      ]
-                                    },
-                                    "principal": "apigateway.amazonaws.com",
-                                    "sourceArn": {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:aws:execute-api:us-east-1:851725582337:",
-                                          {
-                                            "Ref": "ReconciliationApiE3EE3D35"
-                                          },
-                                          "/test-invoke-stage/POST/simulate/processor"
-                                        ]
-                                      ]
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                                  "version": "2.159.1"
-                                }
-                              },
-                              "Resource": {
-                                "id": "Resource",
-                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST/Resource",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
-                                  "aws:cdk:cloudformation:props": {
-                                    "authorizationType": "NONE",
-                                    "httpMethod": "POST",
-                                    "integration": {
-                                      "type": "AWS_PROXY",
-                                      "uri": {
-                                        "Fn::Join": [
-                                          "",
-                                          [
-                                            "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
-                                            {
-                                              "Fn::GetAtt": [
-                                                "ReconStackProcessorSimulatorLambdaA2E49CD7",
-                                                "Arn"
-                                              ]
-                                            },
-                                            "/invocations"
-                                          ]
-                                        ]
-                                      },
-                                      "integrationHttpMethod": "POST"
-                                    },
-                                    "resourceId": {
-                                      "Ref": "ReconciliationApisimulateprocessor82718A7C"
-                                    },
-                                    "restApiId": {
-                                      "Ref": "ReconciliationApiE3EE3D35"
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
-                                  "version": "2.159.1"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
-                              "version": "2.159.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
-                          "version": "2.159.1"
-                        }
-                      },
-                      "core": {
-                        "id": "core",
-                        "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core",
-                        "children": {
-                          "Resource": {
-                            "id": "Resource",
-                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/Resource",
-                            "attributes": {
-                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
-                              "aws:cdk:cloudformation:props": {
-                                "parentId": {
-                                  "Ref": "ReconciliationApisimulateE8AD0488"
-                                },
-                                "pathPart": "core",
-                                "restApiId": {
-                                  "Ref": "ReconciliationApiE3EE3D35"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
-                              "version": "2.159.1"
-                            }
-                          },
-                          "POST": {
-                            "id": "POST",
-                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST",
-                            "children": {
-                              "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core": {
-                                "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
-                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                                  "aws:cdk:cloudformation:props": {
-                                    "action": "lambda:InvokeFunction",
-                                    "functionName": {
-                                      "Fn::GetAtt": [
-                                        "ReconStackCoreSimulatorLambda0D7EF174",
-                                        "Arn"
-                                      ]
-                                    },
-                                    "principal": "apigateway.amazonaws.com",
-                                    "sourceArn": {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:aws:execute-api:us-east-1:851725582337:",
-                                          {
-                                            "Ref": "ReconciliationApiE3EE3D35"
-                                          },
-                                          "/",
-                                          {
-                                            "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
-                                          },
-                                          "/POST/simulate/core"
-                                        ]
-                                      ]
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                                  "version": "2.159.1"
-                                }
-                              },
-                              "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core": {
-                                "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
-                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
-                                  "aws:cdk:cloudformation:props": {
-                                    "action": "lambda:InvokeFunction",
-                                    "functionName": {
-                                      "Fn::GetAtt": [
-                                        "ReconStackCoreSimulatorLambda0D7EF174",
-                                        "Arn"
-                                      ]
-                                    },
-                                    "principal": "apigateway.amazonaws.com",
-                                    "sourceArn": {
-                                      "Fn::Join": [
-                                        "",
-                                        [
-                                          "arn:aws:execute-api:us-east-1:851725582337:",
-                                          {
-                                            "Ref": "ReconciliationApiE3EE3D35"
-                                          },
-                                          "/test-invoke-stage/POST/simulate/core"
-                                        ]
-                                      ]
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
-                                  "version": "2.159.1"
-                                }
-                              },
-                              "Resource": {
-                                "id": "Resource",
-                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST/Resource",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
-                                  "aws:cdk:cloudformation:props": {
-                                    "authorizationType": "NONE",
-                                    "httpMethod": "POST",
-                                    "integration": {
-                                      "type": "AWS_PROXY",
-                                      "uri": {
-                                        "Fn::Join": [
-                                          "",
-                                          [
-                                            "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
-                                            {
-                                              "Fn::GetAtt": [
-                                                "ReconStackCoreSimulatorLambda0D7EF174",
-                                                "Arn"
-                                              ]
-                                            },
-                                            "/invocations"
-                                          ]
-                                        ]
-                                      },
-                                      "integrationHttpMethod": "POST"
-                                    },
-                                    "resourceId": {
-                                      "Ref": "ReconciliationApisimulatecoreB6492946"
-                                    },
-                                    "restApiId": {
-                                      "Ref": "ReconciliationApiE3EE3D35"
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
-                                  "version": "2.159.1"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
-                              "version": "2.159.1"
-                            }
-                          }
-                        },
-                        "constructInfo": {
-                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
-                          "version": "2.159.1"
-                        }
-                      }
-                    },
-                    "constructInfo": {
-                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
-                      "version": "2.159.1"
-                    }
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
-                  "version": "2.159.1"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
-              "version": "2.159.1"
-            }
-          },
           "ReconStackProcessorSimulatorLambda": {
             "id": "ReconStackProcessorSimulatorLambda",
             "path": "ReconciliationStack/ReconStackProcessorSimulatorLambda",
@@ -1819,6 +1233,1573 @@
                 },
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.aws_lambda.EventSourceMapping",
+                  "version": "2.159.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+              "version": "2.159.1"
+            }
+          },
+          "ReconciliationApi": {
+            "id": "ReconciliationApi",
+            "path": "ReconciliationStack/ReconciliationApi",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ReconciliationStack/ReconciliationApi/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "APIs for ledger reconciliation demo",
+                    "name": "Reconciliation Service"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
+                  "version": "2.159.1"
+                }
+              },
+              "Deployment": {
+                "id": "Deployment",
+                "path": "ReconciliationStack/ReconciliationApi/Deployment",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ReconciliationStack/ReconciliationApi/Deployment/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "APIs for ledger reconciliation demo",
+                        "restApiId": {
+                          "Ref": "ReconciliationApiE3EE3D35"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
+                  "version": "2.159.1"
+                }
+              },
+              "DeploymentStage.prod": {
+                "id": "DeploymentStage.prod",
+                "path": "ReconciliationStack/ReconciliationApi/DeploymentStage.prod",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ReconciliationStack/ReconciliationApi/DeploymentStage.prod/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "deploymentId": {
+                          "Ref": "ReconciliationApiDeployment33DDF8822b39e8f3aed448f4e7f35810db8f3847"
+                        },
+                        "restApiId": {
+                          "Ref": "ReconciliationApiE3EE3D35"
+                        },
+                        "stageName": "prod"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
+                  "version": "2.159.1"
+                }
+              },
+              "Endpoint": {
+                "id": "Endpoint",
+                "path": "ReconciliationStack/ReconciliationApi/Endpoint",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.159.1"
+                }
+              },
+              "Default": {
+                "id": "Default",
+                "path": "ReconciliationStack/ReconciliationApi/Default",
+                "children": {
+                  "transaction": {
+                    "id": "transaction",
+                    "path": "ReconciliationStack/ReconciliationApi/Default/transaction",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/transaction/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "ReconciliationApiE3EE3D35",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "transaction",
+                            "restApiId": {
+                              "Ref": "ReconciliationApiE3EE3D35"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.159.1"
+                        }
+                      },
+                      "POST": {
+                        "id": "POST",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST",
+                        "children": {
+                          "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction": {
+                            "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "ReconStackSubmitTransactionLambda5306AEBB",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:us-east-1:851725582337:",
+                                      {
+                                        "Ref": "ReconciliationApiE3EE3D35"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+                                      },
+                                      "/POST/transaction"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction": {
+                            "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..transaction",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "ReconStackSubmitTransactionLambda5306AEBB",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:us-east-1:851725582337:",
+                                      {
+                                        "Ref": "ReconciliationApiE3EE3D35"
+                                      },
+                                      "/test-invoke-stage/POST/transaction"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/transaction/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "POST",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "ReconStackSubmitTransactionLambda5306AEBB",
+                                            "Arn"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                },
+                                "resourceId": {
+                                  "Ref": "ReconciliationApitransactionD7DDDA16"
+                                },
+                                "restApiId": {
+                                  "Ref": "ReconciliationApiE3EE3D35"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.159.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.159.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "simulate": {
+                    "id": "simulate",
+                    "path": "ReconciliationStack/ReconciliationApi/Default/simulate",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/simulate/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "ReconciliationApiE3EE3D35",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "simulate",
+                            "restApiId": {
+                              "Ref": "ReconciliationApiE3EE3D35"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.159.1"
+                        }
+                      },
+                      "processor": {
+                        "id": "processor",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "ReconciliationApisimulateE8AD0488"
+                                },
+                                "pathPart": "processor",
+                                "restApiId": {
+                                  "Ref": "ReconciliationApiE3EE3D35"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "POST": {
+                            "id": "POST",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST",
+                            "children": {
+                              "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor": {
+                                "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "ReconStackProcessorSimulatorLambdaA2E49CD7",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-east-1:851725582337:",
+                                          {
+                                            "Ref": "ReconciliationApiE3EE3D35"
+                                          },
+                                          "/",
+                                          {
+                                            "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+                                          },
+                                          "/POST/simulate/processor"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.159.1"
+                                }
+                              },
+                              "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor": {
+                                "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.processor",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "ReconStackProcessorSimulatorLambdaA2E49CD7",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-east-1:851725582337:",
+                                          {
+                                            "Ref": "ReconciliationApiE3EE3D35"
+                                          },
+                                          "/test-invoke-stage/POST/simulate/processor"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.159.1"
+                                }
+                              },
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/processor/POST/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "POST",
+                                    "integration": {
+                                      "type": "AWS_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "ReconStackProcessorSimulatorLambdaA2E49CD7",
+                                                "Arn"
+                                              ]
+                                            },
+                                            "/invocations"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "POST"
+                                    },
+                                    "resourceId": {
+                                      "Ref": "ReconciliationApisimulateprocessor82718A7C"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "ReconciliationApiE3EE3D35"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.159.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.159.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.159.1"
+                        }
+                      },
+                      "core": {
+                        "id": "core",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "ReconciliationApisimulateE8AD0488"
+                                },
+                                "pathPart": "core",
+                                "restApiId": {
+                                  "Ref": "ReconciliationApiE3EE3D35"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "POST": {
+                            "id": "POST",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST",
+                            "children": {
+                              "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core": {
+                                "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST/ApiPermission.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "ReconStackCoreSimulatorLambda0D7EF174",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-east-1:851725582337:",
+                                          {
+                                            "Ref": "ReconciliationApiE3EE3D35"
+                                          },
+                                          "/",
+                                          {
+                                            "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+                                          },
+                                          "/POST/simulate/core"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.159.1"
+                                }
+                              },
+                              "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core": {
+                                "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.POST..simulate.core",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "ReconStackCoreSimulatorLambda0D7EF174",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-east-1:851725582337:",
+                                          {
+                                            "Ref": "ReconciliationApiE3EE3D35"
+                                          },
+                                          "/test-invoke-stage/POST/simulate/core"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.159.1"
+                                }
+                              },
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/simulate/core/POST/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "POST",
+                                    "integration": {
+                                      "type": "AWS_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "ReconStackCoreSimulatorLambda0D7EF174",
+                                                "Arn"
+                                              ]
+                                            },
+                                            "/invocations"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "POST"
+                                    },
+                                    "resourceId": {
+                                      "Ref": "ReconciliationApisimulatecoreB6492946"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "ReconciliationApiE3EE3D35"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.159.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.159.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.159.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "findings": {
+                    "id": "findings",
+                    "path": "ReconciliationStack/ReconciliationApi/Default/findings",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/findings/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "ReconciliationApiE3EE3D35",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "findings",
+                            "restApiId": {
+                              "Ref": "ReconciliationApiE3EE3D35"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.159.1"
+                        }
+                      },
+                      "GET": {
+                        "id": "GET",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/findings/GET",
+                        "children": {
+                          "ApiPermission.ReconciliationStackReconciliationApiF33D9560.GET..findings": {
+                            "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.GET..findings",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/findings/GET/ApiPermission.ReconciliationStackReconciliationApiF33D9560.GET..findings",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "ReconStackGetFindingsLambdaAEF96583",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:us-east-1:851725582337:",
+                                      {
+                                        "Ref": "ReconciliationApiE3EE3D35"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+                                      },
+                                      "/GET/findings"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.GET..findings": {
+                            "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.GET..findings",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/findings/GET/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.GET..findings",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "ReconStackGetFindingsLambdaAEF96583",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:aws:execute-api:us-east-1:851725582337:",
+                                      {
+                                        "Ref": "ReconciliationApiE3EE3D35"
+                                      },
+                                      "/test-invoke-stage/GET/findings"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/findings/GET/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": true,
+                                "authorizationType": "NONE",
+                                "httpMethod": "GET",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "ReconStackGetFindingsLambdaAEF96583",
+                                            "Arn"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                },
+                                "resourceId": {
+                                  "Ref": "ReconciliationApifindings9FCA8762"
+                                },
+                                "restApiId": {
+                                  "Ref": "ReconciliationApiE3EE3D35"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.159.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.159.1"
+                        }
+                      },
+                      "OPTIONS": {
+                        "id": "OPTIONS",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/findings/OPTIONS",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/findings/OPTIONS/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": false,
+                                "authorizationType": "NONE",
+                                "httpMethod": "OPTIONS",
+                                "integration": {
+                                  "type": "MOCK",
+                                  "requestTemplates": {
+                                    "application/json": "{ statusCode: 200 }"
+                                  },
+                                  "integrationResponses": [
+                                    {
+                                      "statusCode": "204",
+                                      "responseParameters": {
+                                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key'",
+                                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "methodResponses": [
+                                  {
+                                    "statusCode": "204",
+                                    "responseParameters": {
+                                      "method.response.header.Access-Control-Allow-Headers": true,
+                                      "method.response.header.Access-Control-Allow-Origin": true,
+                                      "method.response.header.Access-Control-Allow-Methods": true
+                                    }
+                                  }
+                                ],
+                                "resourceId": {
+                                  "Ref": "ReconciliationApifindings9FCA8762"
+                                },
+                                "restApiId": {
+                                  "Ref": "ReconciliationApiE3EE3D35"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.159.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.159.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "audit": {
+                    "id": "audit",
+                    "path": "ReconciliationStack/ReconciliationApi/Default/audit",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/audit/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "ReconciliationApiE3EE3D35",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "audit",
+                            "restApiId": {
+                              "Ref": "ReconciliationApiE3EE3D35"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.159.1"
+                        }
+                      },
+                      "OPTIONS": {
+                        "id": "OPTIONS",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/audit/OPTIONS",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/audit/OPTIONS/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": false,
+                                "authorizationType": "NONE",
+                                "httpMethod": "OPTIONS",
+                                "integration": {
+                                  "type": "MOCK",
+                                  "requestTemplates": {
+                                    "application/json": "{ statusCode: 200 }"
+                                  },
+                                  "integrationResponses": [
+                                    {
+                                      "statusCode": "204",
+                                      "responseParameters": {
+                                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key'",
+                                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                        "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "methodResponses": [
+                                  {
+                                    "statusCode": "204",
+                                    "responseParameters": {
+                                      "method.response.header.Access-Control-Allow-Headers": true,
+                                      "method.response.header.Access-Control-Allow-Origin": true,
+                                      "method.response.header.Access-Control-Allow-Methods": true
+                                    }
+                                  }
+                                ],
+                                "resourceId": {
+                                  "Ref": "ReconciliationApiaudit9C50E6C8"
+                                },
+                                "restApiId": {
+                                  "Ref": "ReconciliationApiE3EE3D35"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.159.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.159.1"
+                        }
+                      },
+                      "{txId}": {
+                        "id": "{txId}",
+                        "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "ReconciliationApiaudit9C50E6C8"
+                                },
+                                "pathPart": "{txId}",
+                                "restApiId": {
+                                  "Ref": "ReconciliationApiE3EE3D35"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "GET": {
+                            "id": "GET",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}/GET",
+                            "children": {
+                              "ApiPermission.ReconciliationStackReconciliationApiF33D9560.GET..audit.{txId}": {
+                                "id": "ApiPermission.ReconciliationStackReconciliationApiF33D9560.GET..audit.{txId}",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}/GET/ApiPermission.ReconciliationStackReconciliationApiF33D9560.GET..audit.{txId}",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "ReconStackGetAuditLambdaA417CD4A",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-east-1:851725582337:",
+                                          {
+                                            "Ref": "ReconciliationApiE3EE3D35"
+                                          },
+                                          "/",
+                                          {
+                                            "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+                                          },
+                                          "/GET/audit/*"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.159.1"
+                                }
+                              },
+                              "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.GET..audit.{txId}": {
+                                "id": "ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.GET..audit.{txId}",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}/GET/ApiPermission.Test.ReconciliationStackReconciliationApiF33D9560.GET..audit.{txId}",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "ReconStackGetAuditLambdaA417CD4A",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:aws:execute-api:us-east-1:851725582337:",
+                                          {
+                                            "Ref": "ReconciliationApiE3EE3D35"
+                                          },
+                                          "/test-invoke-stage/GET/audit/*"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.159.1"
+                                }
+                              },
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}/GET/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": true,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "GET",
+                                    "integration": {
+                                      "type": "AWS_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "ReconStackGetAuditLambdaA417CD4A",
+                                                "Arn"
+                                              ]
+                                            },
+                                            "/invocations"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "POST"
+                                    },
+                                    "resourceId": {
+                                      "Ref": "ReconciliationApiaudittxIdDC8693D7"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "ReconciliationApiE3EE3D35"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.159.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.159.1"
+                            }
+                          },
+                          "OPTIONS": {
+                            "id": "OPTIONS",
+                            "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}/OPTIONS",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "ReconciliationStack/ReconciliationApi/Default/audit/{txId}/OPTIONS/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "apiKeyRequired": false,
+                                    "authorizationType": "NONE",
+                                    "httpMethod": "OPTIONS",
+                                    "integration": {
+                                      "type": "MOCK",
+                                      "requestTemplates": {
+                                        "application/json": "{ statusCode: 200 }"
+                                      },
+                                      "integrationResponses": [
+                                        {
+                                          "statusCode": "204",
+                                          "responseParameters": {
+                                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Api-Key'",
+                                            "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                            "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'"
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "methodResponses": [
+                                      {
+                                        "statusCode": "204",
+                                        "responseParameters": {
+                                          "method.response.header.Access-Control-Allow-Headers": true,
+                                          "method.response.header.Access-Control-Allow-Origin": true,
+                                          "method.response.header.Access-Control-Allow-Methods": true
+                                        }
+                                      }
+                                    ],
+                                    "resourceId": {
+                                      "Ref": "ReconciliationApiaudittxIdDC8693D7"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "ReconciliationApiE3EE3D35"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.159.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.159.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.159.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
+                  "version": "2.159.1"
+                }
+              },
+              "ReconciliationApiKey": {
+                "id": "ReconciliationApiKey",
+                "path": "ReconciliationStack/ReconciliationApi/ReconciliationApiKey",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ReconciliationStack/ReconciliationApi/ReconciliationApiKey/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::ApiKey",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "API Key for Reconciliation POC",
+                        "enabled": true,
+                        "name": "ReconDemoKey",
+                        "stageKeys": [
+                          {
+                            "restApiId": {
+                              "Ref": "ReconciliationApiE3EE3D35"
+                            },
+                            "stageName": {
+                              "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnApiKey",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ApiKey",
+                  "version": "2.159.1"
+                }
+              },
+              "ReconciliationUsagePlan": {
+                "id": "ReconciliationUsagePlan",
+                "path": "ReconciliationStack/ReconciliationApi/ReconciliationUsagePlan",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ReconciliationStack/ReconciliationApi/ReconciliationUsagePlan/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::UsagePlan",
+                      "aws:cdk:cloudformation:props": {
+                        "apiStages": [
+                          {
+                            "apiId": {
+                              "Ref": "ReconciliationApiE3EE3D35"
+                            },
+                            "stage": {
+                              "Ref": "ReconciliationApiDeploymentStageprod14928DA3"
+                            },
+                            "throttle": {}
+                          }
+                        ],
+                        "description": "Limit to 1 req/sec and 100 req/day",
+                        "quota": {
+                          "limit": 100,
+                          "period": "DAY"
+                        },
+                        "throttle": {
+                          "burstLimit": 1,
+                          "rateLimit": 1
+                        },
+                        "usagePlanName": "ReconUsagePlan"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnUsagePlan",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "UsagePlanKeyResource:ReconciliationStackReconciliationApiReconciliationApiKey45F32BB7": {
+                    "id": "UsagePlanKeyResource:ReconciliationStackReconciliationApiReconciliationApiKey45F32BB7",
+                    "path": "ReconciliationStack/ReconciliationApi/ReconciliationUsagePlan/UsagePlanKeyResource:ReconciliationStackReconciliationApiReconciliationApiKey45F32BB7",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::UsagePlanKey",
+                      "aws:cdk:cloudformation:props": {
+                        "keyId": {
+                          "Ref": "ReconciliationApiReconciliationApiKey31FCFE91"
+                        },
+                        "keyType": "API_KEY",
+                        "usagePlanId": {
+                          "Ref": "ReconciliationApiReconciliationUsagePlan5C2510D4"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnUsagePlanKey",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.UsagePlan",
+                  "version": "2.159.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.159.1"
+            }
+          },
+          "ReconStackGetFindingsLambda": {
+            "id": "ReconStackGetFindingsLambda",
+            "path": "ReconciliationStack/ReconStackGetFindingsLambda",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "ReconciliationStack/ReconStackGetFindingsLambda/ServiceRole",
+                "children": {
+                  "ImportServiceRole": {
+                    "id": "ImportServiceRole",
+                    "path": "ReconciliationStack/ReconStackGetFindingsLambda/ServiceRole/ImportServiceRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ReconciliationStack/ReconStackGetFindingsLambda/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "ReconciliationStack/ReconStackGetFindingsLambda/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ReconciliationStack/ReconStackGetFindingsLambda/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:DescribeTable",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:Scan"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "ReconciliationFindings2A38872C",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "ReconStackGetFindingsLambdaServiceRoleDefaultPolicy36029B27",
+                            "roles": [
+                              {
+                                "Ref": "ReconStackGetFindingsLambdaServiceRoleBF4A60E4"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.159.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.159.1"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "ReconciliationStack/ReconStackGetFindingsLambda/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "ReconciliationStack/ReconStackGetFindingsLambda/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "ReconciliationStack/ReconStackGetFindingsLambda/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.159.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ReconciliationStack/ReconStackGetFindingsLambda/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-851725582337-us-east-1",
+                      "s3Key": "780df8c0302608958840dd98979dfd2a7cc738d1a87b721385eea746330274af.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "FINDINGS_TABLE": {
+                          "Ref": "ReconciliationFindings2A38872C"
+                        }
+                      }
+                    },
+                    "handler": "index.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "ReconStackGetFindingsLambdaServiceRoleBF4A60E4",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "nodejs18.x"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.159.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+              "version": "2.159.1"
+            }
+          },
+          "ReconStackGetAuditLambda": {
+            "id": "ReconStackGetAuditLambda",
+            "path": "ReconciliationStack/ReconStackGetAuditLambda",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "ReconciliationStack/ReconStackGetAuditLambda/ServiceRole",
+                "children": {
+                  "ImportServiceRole": {
+                    "id": "ImportServiceRole",
+                    "path": "ReconciliationStack/ReconStackGetAuditLambda/ServiceRole/ImportServiceRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ReconciliationStack/ReconStackGetAuditLambda/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "ReconciliationStack/ReconStackGetAuditLambda/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ReconciliationStack/ReconStackGetAuditLambda/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:DescribeTable",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:Scan"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "ReconciliationAuditB69C1A5C",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "ReconStackGetAuditLambdaServiceRoleDefaultPolicyD26538B8",
+                            "roles": [
+                              {
+                                "Ref": "ReconStackGetAuditLambdaServiceRoleF5FDBE51"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.159.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.159.1"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "ReconciliationStack/ReconStackGetAuditLambda/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "ReconciliationStack/ReconStackGetAuditLambda/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.159.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "ReconciliationStack/ReconStackGetAuditLambda/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.159.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.159.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ReconciliationStack/ReconStackGetAuditLambda/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-851725582337-us-east-1",
+                      "s3Key": "0c7f545310a64ca238d4ce96e8d8d9b7c3d2d68bb447f6e72e8aea3dbe263f8e.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "AUDIT_TABLE": {
+                          "Ref": "ReconciliationAuditB69C1A5C"
+                        }
+                      }
+                    },
+                    "handler": "index.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "ReconStackGetAuditLambdaServiceRoleF5FDBE51",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "nodejs18.x"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
                   "version": "2.159.1"
                 }
               }
