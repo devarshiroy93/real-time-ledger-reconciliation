@@ -1,0 +1,27 @@
+{
+  "name": "real-time-ledger-reconciliation",
+  "version": "1.0.0",
+  "description": "---",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devarshiroy93/real-time-ledger-reconciliation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/devarshiroy93/real-time-ledger-reconciliation/issues"
+  },
+  "homepage": "https://github.com/devarshiroy93/real-time-ledger-reconciliation#readme",
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}

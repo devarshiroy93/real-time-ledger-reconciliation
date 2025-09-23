@@ -1,6 +1,6 @@
 // src/pages/DashboardPage.tsx
 import { useEffect, useState } from "react";
-import { getFindings, Finding } from "../services/findingsApi"; // <-- from api layer
+import { getFindings, Finding } from "../services/findingsApi";
 import TransactionDrilldown from "../components/TransactionDrillDown";
 
 export default function DashboardPage() {
@@ -66,9 +66,6 @@ export default function DashboardPage() {
                 Category
               </th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                Details
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                 Updated At
               </th>
             </tr>
@@ -85,8 +82,14 @@ export default function DashboardPage() {
                 }
               >
                 <td className="px-4 py-2 text-sm">{f.txId}</td>
-                <td className="px-4 py-2 text-sm">{f.category}</td>
-                <td className="px-4 py-2 text-sm">{f.details}</td>
+                <td className="px-4 py-2 text-sm">
+                  {f.category}
+                  {f.category.includes("MISMATCH") && (
+                    <div className="mt-1 text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded inline-block">
+                      {f.details}
+                    </div>
+                  )}
+                </td>
                 <td className="px-4 py-2 text-sm">
                   {new Date(f.updatedAt).toLocaleString()}
                 </td>

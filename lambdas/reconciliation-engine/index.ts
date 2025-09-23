@@ -132,9 +132,17 @@ async function getLedgerEntries(table: string, txId: string) {
 }
 
 // Reconciliation logic
-function decideOutcome(customer: any, processorEntries: any[], coreEntries: any[]) {
+export function decideOutcome(customer: any, processorEntries: any[], coreEntries: any[]) {
   let category = "PENDING ⏳";
   let details = "Waiting for more ledger entries.";
+
+  // ✅ Always check PENDING customer first
+  if (customer && customer.status === "PENDING") {
+    return {
+      category: "PENDING ⏳",
+      details: "Customer shows PENDING, waiting for other ledgers.",
+    };
+  }
 
   if (processorEntries.length > 1) {
     category = "MISMATCH ❌";
@@ -156,9 +164,6 @@ function decideOutcome(customer: any, processorEntries: any[], coreEntries: any[
       category = "MISMATCH ❌";
       details = "Amounts differ across ledgers.";
     }
-  } else if (customer && customer.status === "PENDING") {
-    category = "PENDING ⏳";
-    details = "Customer shows PENDING, waiting for other ledgers.";
   } else if (customer && processorEntries.length === 0) {
     category = "MISMATCH ❌";
     details = "Missing Processor entry.";
@@ -169,3 +174,4 @@ function decideOutcome(customer: any, processorEntries: any[], coreEntries: any[
 
   return { category, details };
 }
+
