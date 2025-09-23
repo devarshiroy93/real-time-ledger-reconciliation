@@ -24,72 +24,96 @@ export const handler = async (event: any) => {
     const txId = record.dynamodb.Keys.txId.S;
     console.log(`Reconciling txId: ${txId}`);
 
-    // --- Gather entries ---
-    const customerEntries = await getLedgerEntries(CUSTOMER_TABLE, txId);
-    const processorEntries = await getLedgerEntries(PROCESSOR_TABLE, txId);
-    const coreEntries = await getLedgerEntries(CORE_TABLE, txId);
+    try {
+      // --- Gather entries ---
+      const customerEntries = await getLedgerEntries(CUSTOMER_TABLE, txId);
+      const processorEntries = await getLedgerEntries(PROCESSOR_TABLE, txId);
+      const coreEntries = await getLedgerEntries(CORE_TABLE, txId);
 
-    const customer = customerEntries[0] ?? null; // expect 1
+      const customer = customerEntries[0] ?? null; // expect 1
 
-    // --- Flip CustomerLedger to SETTLED once processor entry exists ---
-    if (customer && processorEntries.length > 0 && customer.status === "PENDING") {
-      try {
-        await ddb.send(
-          new UpdateItemCommand({
-            TableName: CUSTOMER_TABLE,
-            Key: { txId: { S: customer.txId } },
-            UpdateExpression: "SET #s = :s",
-            ExpressionAttributeNames: { "#s": "status" },
-            ConditionExpression: "#s = :pending", // only if still PENDING
-            ExpressionAttributeValues: {
-              ":s": { S: "SETTLED" },
-              ":pending": { S: "PENDING" },
-            },
-          })
-        );
-        console.log(`CustomerLedger updated to SETTLED for ${txId}`);
-        customer.status = "SETTLED"; // reflect locally
-      } catch (err: any) {
-        if (err.name === "ConditionalCheckFailedException") {
-          console.log(`CustomerLedger already updated for ${txId}`);
-        } else {
-          console.error("CustomerLedger update error", err);
-          throw err;
+      // --- Flip CustomerLedger to SETTLED once processor entry exists ---
+      if (customer && processorEntries.length > 0 && customer.status === "PENDING") {
+        try {
+          await ddb.send(
+            new UpdateItemCommand({
+              TableName: CUSTOMER_TABLE,
+              Key: { txId: { S: customer.txId } },
+              UpdateExpression: "SET #s = :s",
+              ExpressionAttributeNames: { "#s": "status" },
+              ConditionExpression: "#s = :pending", // only if still PENDING
+              ExpressionAttributeValues: {
+                ":s": { S: "SETTLED" },
+                ":pending": { S: "PENDING" },
+              },
+            })
+          );
+          console.log(`CustomerLedger updated to SETTLED for ${txId}`);
+          customer.status = "SETTLED"; // reflect locally
+        } catch (err: any) {
+          if (err.name === "ConditionalCheckFailedException") {
+            console.log(`CustomerLedger already updated for ${txId}`);
+          } else {
+            console.error("CustomerLedger update error", err);
+            // 🚨 Production note:
+            // In production, configure this Lambda with a DLQ (SQS) or OnFailure destination.
+            // The failed event would go to the DLQ for later replay/investigation.
+            throw err;
+          }
         }
       }
+
+      // --- Decide outcome ---
+      const { category, details } = decideOutcome(customer, processorEntries, coreEntries);
+      const now = new Date().toISOString();
+
+      // --- Write to Audit (append-only) ---
+      await ddb.send(
+        new PutItemCommand({
+          TableName: AUDIT_TABLE,
+          Item: {
+            txId: { S: txId },
+            eventTimestamp: { S: now },
+            category: { S: category },
+            details: { S: details },
+          },
+        })
+      );
+      console.log(`Audit log written for ${txId}: ${category}`);
+
+      // --- Write to Findings (latest state only, overwrite) ---
+      await ddb.send(
+        new PutItemCommand({
+          TableName: FINDINGS_TABLE,
+          Item: {
+            txId: { S: txId },
+            category: { S: category },
+            details: { S: details },
+            updatedAt: { S: now },
+          },
+        })
+      );
+      console.log(`Findings updated for ${txId}: ${category}`);
+    } catch (err: any) {
+      console.error(`Fatal reconciliation error for txId=${txId}`, err);
+
+      // 🚨 Production note:
+      // At this point, if *any* unhandled error occurs, the entire record fails.
+      // With DynamoDB Streams → Lambda, AWS retries the batch a few times.
+      // To avoid poison-pill records blocking the stream:
+      // - Attach an SQS DLQ or OnFailure destination in the Lambda config.
+      // - This ensures failed txIds land in DLQ for later replay.
+      //
+      // Example infra (CDK):
+      // new lambda.EventSourceMapping(this, "Mapping", {
+      //   target: reconciliationFn,
+      //   eventSourceArn: customerLedger.tableStreamArn,
+      //   onFailure: new destinations.SqsDlq(myDlqQueue),
+      //   retryAttempts: 2,
+      // });
+
+      throw err; // rethrow so Lambda retry/DLQ kicks in
     }
-
-    // --- Decide outcome ---
-    const { category, details } = decideOutcome(customer, processorEntries, coreEntries);
-    const now = new Date().toISOString();
-
-    // --- Write to Audit (append-only) ---
-    await ddb.send(
-      new PutItemCommand({
-        TableName: AUDIT_TABLE,
-        Item: {
-          txId: { S: txId },
-          eventTimestamp: { S: now },
-          category: { S: category },
-          details: { S: details },
-        },
-      })
-    );
-    console.log(`Audit log written for ${txId}: ${category}`);
-
-    // --- Write to Findings (latest state only, overwrite) ---
-    await ddb.send(
-      new PutItemCommand({
-        TableName: FINDINGS_TABLE,
-        Item: {
-          txId: { S: txId },
-          category: { S: category },
-          details: { S: details },
-          updatedAt: { S: now },
-        },
-      })
-    );
-    console.log(`Findings updated for ${txId}: ${category}`);
   }
 };
 
