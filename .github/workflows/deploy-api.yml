@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Deploy CDK
-        run: npx aws-cdk deploy --all --require-approval never
-        working-directory: infra
+      - name: Deploy CDK Stack
+        run: |
+            cd infra
+            npx cdk deploy --all --require-approval never
