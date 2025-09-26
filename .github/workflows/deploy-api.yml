@@ -7,6 +7,8 @@ on:
     paths:
       - "infra/**"
       - "lambdas/**"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/deploy-api.yml"
 
 jobs:
@@ -20,13 +22,15 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20   # ✅ use supported LTS version
+          node-version: 20
+
+      - name: Install root dependencies
+        run: npm ci   # ✅ includes uuid for lambdas
 
       - name: Install infra dependencies
         run: |
           cd infra
           npm ci
-          npm install uuid --save-exact   # ✅ ensure uuid is bundled
 
       - name: Deploy CDK Stack
         run: |
