@@ -16,18 +16,3 @@ async function apiClient(path, options = {}) {
     return res.json();
 }
 export default apiClient;
-// ------------------------------
-// ✅ Explicit API helpers
-// ------------------------------
-export async function submitApplication(body) {
-    return apiClient("/transaction", {
-        method: "POST",
-        body: JSON.stringify(body),
-    });
-}
-export async function getFindings() {
-    return apiClient("/findings", { method: "GET" });
-}
-export async function getAudit(txId) {
-    return apiClient(`/audit/${txId}`, { method: "GET" });
-}

@@ -20,22 +20,3 @@ async function apiClient<T>(path: string, options: RequestInit = {}): Promise<T>
 }
 
 export default apiClient;
-
-// ------------------------------
-// ✅ Explicit API helpers
-// ------------------------------
-
-export async function submitApplication(body: { txId: string; amount: number }) {
-  return apiClient("/transaction", {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
-}
-
-export async function getFindings() {
-  return apiClient("/findings", { method: "GET" });
-}
-
-export async function getAudit(txId: string) {
-  return apiClient(`/audit/${txId}`, { method: "GET" });
-}
