@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { submitApplication } from "../services/apiClient";
+import { submitTransaction } from "../services/findingsApi";
 
 // Define the expected response shape from backend
 interface SubmitResponse {
@@ -13,23 +13,20 @@ export default function SubmitApplication() {
 
   const userId = import.meta.env.VITE_USER_ID!;
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("Submitting...");
+  e.preventDefault();
+  setStatus("Submitting...");
 
-    try {
-      const result: SubmitResponse = await submitApplication(userId, {
-        amount,
-        purpose,
-      });
-      setStatus(`Application submitted! ID: ${result.applicationId}`);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setStatus(` Error: ${err.message}`);
-      } else {
-        setStatus(" Unknown error occurred");
-      }
+  try {
+    const result = await submitTransaction(`tx-${Date.now()}`, amount);
+    setStatus(`Transaction submitted!`);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      setStatus(` Error: ${err.message}`);
+    } else {
+      setStatus(" Unknown error occurred");
     }
-  };
+  }
+};
 
   return (
     <div className="p-6 max-w-md mx-auto">
