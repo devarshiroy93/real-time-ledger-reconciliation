@@ -20,12 +20,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20   # ✅ use supported LTS version
 
-      - name: Install dependencies
+      - name: Install infra dependencies
         run: |
           cd infra
           npm ci
+          npm install uuid --save-exact   # ✅ ensure uuid is bundled
 
       - name: Deploy CDK Stack
         run: |
