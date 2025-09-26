@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/devarshiroy93/real-time-ledger-reconciliation#readme",
   "devDependencies": {
+    "aws-cdk": "^2.1029.3",
     "vitest": "^3.2.4"
   }
 }

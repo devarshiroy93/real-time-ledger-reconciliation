@@ -1,36 +1,29 @@
-name: Deploy API (CDK)
+name: Deploy API
 
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - "infra/**"
       - "lambdas/**"
-      - ".github/workflows/deploy-api.yml"
 
 jobs:
-  deploy:
+  deploy-api:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: Install dependencies
-        run: |
-          cd infra
-          npm install
+        run: npm ci
 
-      - name: CDK Deploy
-        run: |
-          npx cdk deploy --all --require-approval never
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
+      - name: Deploy CDK
+        run: npx aws-cdk deploy --all --require-approval never
+        working-directory: infra
